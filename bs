@@ -654,4 +654,7 @@
   <!-- 4. Functions of Accounting -->
   <div class="topic">
     <div class="topic-header" onclick="toggleTopic(this)">
-      <span class="topic-title">4. Functions / Objec
+      <span class="topic-title">4. Functions / Object
+
+
+add homepage 
