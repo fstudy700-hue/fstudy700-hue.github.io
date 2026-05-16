@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FA-I Chapter 1 | Exam Prep</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0d0f1a;
+    --surface: #13162a;
+    --card: #1a1e35;
+    --border: #252a45;
+    --gold: #f5c842;
+    --gold-dim: #a8893a;
+    --green: #3ddc84;
+    --red: #ff5f6d;
+    --blue: #5b8dee;
+    --text: #e8eaf6;
+    --muted: #8b90b8;
+    --accent: #7c3aed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #1a1e35 0%, #0d0f1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+  }
+
+  .score-item { color: var(--muted); }
+  .score-item span { font-weight: 600; }
+  .score-item .correct { color: var(--green); }
+  .score-item .wrong { color: var(--red); }
+  .score-item .pending { color: var(--gold); }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 14px 22px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* SECTIONS */
+  .section { display: none; padding: 20px 16px; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* NOTES SECTION */
+  .chapter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .chapter-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topic {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .topic-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  .topic-header:hover { background: rgba(245,200,66,0.04); }
+
+  .topic-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--gold);
+  }
+
+  .topic-arrow {
+    color: var(--muted);
+    transition: transform 0.25s;
+    font-size: 1.1rem;
+  }
+
+  .topic.open .topic-arrow { transform: rotate(180deg); }
+
+  .topic-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .topic.open .topic-body { display: block; }
+
+  .def-term {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--gold);
+    background: rgba(245,200,66,0.08);
+    border-left: 3px solid var(--gold);
+    padding: 4px 10px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0 6px;
+    display: inline-block;
+  }
+
+  .def-body {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 10px;
+  }
+
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 0.875rem;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.65;
+  }
+
+  .bullet-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+  }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 0.82rem;
+  }
+
+  .compare-table th {
+    background: rgba(245,200,66,0.12);
+    color: var(--gold);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .highlight-box {
+    background: rgba(91,141,238,0.08);
+    border: 1px solid rgba(91,141,238,0.25);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+
+  .highlight-box strong { color: var(--blue); }
+
+  .formula-box {
+    background: rgba(245,200,66,0.06);
+    border: 1px dashed var(--gold-dim);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .cycle-diagram {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0;
+    justify-content: center;
+  }
+
+  .cycle-step {
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.35);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cycle-step .num {
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* QUIZ SECTION */
+  .quiz-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .question-card.answered-correct { border-color: var(--green); background: rgba(61,220,132,0.05); }
+  .question-card.answered-wrong { border-color: var(--red); background: rgba(255,95,109,0.05); }
+
+  .q-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .q-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .q-tag.mcq { background: rgba(91,141,238,0.15); color: var(--blue); border: 1px solid rgba(91,141,238,0.3); }
+  .q-tag.short { background: rgba(61,220,132,0.12); color: var(--green); border: 1px solid rgba(61,220,132,0.25); }
+  .q-tag.def { background: rgba(245,200,66,0.12); color: var(--gold); border: 1px solid rgba(245,200,66,0.25); }
+
+  .q-text {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  /* MCQ Options */
+  .mcq-options {
+    display: grid;
+    gap: 8px;
+  }
+
+  .mcq-opt {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text);
+    background: var(--surface);
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.4;
+  }
+
+  .mcq-opt:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+  .mcq-opt.correct { border-color: var(--green); background: rgba(61,220,132,0.12); color: var(--green); font-weight: 600; }
+  .mcq-opt.wrong { border-color: var(--red); background: rgba(255,95,109,0.12); color: var(--red); }
+  .mcq-opt:disabled { cursor: not-allowed; opacity: 0.75; }
+
+  /* Short Q input */
+  .short-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ans-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 0.875rem;
+    font-family: 'DM Sans', sans-serif;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s;
+  }
+
+  .ans-input:focus { outline: none; border-color: var(--gold); }
+  .ans-input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .submit-btn {
+    align-self: flex-start;
+    padding: 9px 22px;
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.2s;
+  }
+
+  .submit-btn:hover:not(:disabled) { opacity: 0.88; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Feedback */
+  .feedback {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+
+  .feedback.correct {
+    background: rgba(61,220,132,0.1);
+    border: 1px solid rgba(61,220,132,0.3);
+    color: var(--green);
+    display: block;
+  }
+
+  .feedback.wrong {
+    background: rgba(255,95,109,0.1);
+    border: 1px solid rgba(255,95,109,0.3);
+    color: var(--red);
+    display: block;
+  }
+
+  .feedback .model-ans {
+    color: var(--text);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .feedback .model-ans strong { color: var(--gold); }
+
+  /* PROGRESS */
+  .progress-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .big-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    margin: 16px 0 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #f0a500);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    font-size: 0.85rem;
+  }
+
+  .stat { color: var(--muted); }
+  .stat span { font-weight: 600; display: block; font-size: 1.1rem; }
+  .stat .g { color: var(--green); }
+  .stat .r { color: var(--red); }
+  .stat .y { color: var(--gold); }
+
+  .reset-btn {
+    margin-top: 16px;
+    padding: 9px 22px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* Search */
+  .search-bar {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .search-bar:focus { outline: none; border-color: var(--gold); }
+
+  .no-results {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 0;
+    font-size: 0.9rem;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Category badge */
+  .cat-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 24px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Financial Accounting – I</h1>
+  <p>Chapter 1 · Introduction to Principles of Accounting · D.Com Part-I</p>
+  <div class="score-bar">
+    <div class="score-item">Score: <span class="correct" id="hdr-correct">0</span>✓ <span class="wrong" id="hdr-wrong">0</span>✗ <span class="pending" id="hdr-pending">0</span> pending</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('notes')">📖 Notes</button>
+  <button class="tab" onclick="showTab('quiz')">🧠 Quiz (100+ Qs)</button>
+  <button class="tab" onclick="showTab('progress')">📊 Progress</button>
+</div>
+
+<!-- ═══════════════════ NOTES SECTION ═══════════════════ -->
+<div class="section active" id="tab-notes">
+
+  <div class="chapter-title">Chapter 1: Introduction to Principles of Accounting</div>
+  <div class="chapter-sub">Complete notes covering all definitions, concepts, and key points from your textbook.</div>
+
+  <!-- 1. Definition of Accounting -->
+  <div class="topic open">
+    <div class="topic-header" onclick="toggleTopic(this)">
+      <span class="topic-title">1. Definition of Accounting</span>
+      <span class="topic-arrow">▾</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-body">Accounting deals with communication of business activities of a firm to the individual and various sections within the firm and also to outsiders. It is an art of recording all business transactions and events of financial character in a prescribed manner, classifying them in a significant manner, analyzing classified records to prepare summary results communicated to concerned parties in shape of reports and statements.</div>
+      <div class="section-label">Key Definitions by Authorities</div>
+      <ul class="bullet-list">
+        <li><strong>Dupree & Marder:</strong> "The act of collecting, processing, analyzing, interpreting and projecting of financial statements."</li>
+        <li><strong>MacFarlan, Ayares & Stove:</strong> "The art of systematically recording, presenting and interpreting the financial information of an enterprise."</li>
+        <li><strong>American Accounting Association:</strong> "Accounting is the process of identifying, measuring and communicating economic information to permit informed judgment and decision by user of the information."</li>
+        <li><strong>Committee of Institute of Public Accountants:</strong> "The art of recording, classifying and summarizing in a significant manner and in terms of money, transactions and events, which are in part, at least of financial character, interpreting the results thereof."</li>
+        <li><strong>Comprehensive Definition:</strong> "The art of recording, classifying and summarizing the business transactions and finally to prepare the financial statements, i.e. income statement and balance sheet."</li>
+      </ul>
+      <div class="highlight-box">
+        <strong>From all definitions, accounting is mainly concerned with:</strong><br>
+        1. Recording of business data &nbsp;|&nbsp; 2. Classification of recorded data &nbsp;|&nbsp; 3. Analysis of summarized data &nbsp;|&nbsp; 4. Preparation of statements and reports
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Book Keeping -->
+  <div class="topic">
+    <div class="topic-header" onclick="toggleTopic(this)">
+      <span class="topic-title">2. Book Keeping — Definition & Differences</span>
+      <span class="topic-arrow">▾</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-body">"Book" means the "books of accounts" and "keeping" means "maintaining them in proper form and order." Book-keeping is mainly concerned with the recording of business data in proper books.</div>
+      <ul class="bullet-list">
+        <li>"Book-keeping is an art of recording in books of accounts, transactions in money or money's terms."</li>
+        <li>"The systematic recording of financial transaction of an enterprise is known as book-keeping."</li>
+        <li>"Book-keeping may be defined as an art of recording business transactions in terms of money under appropriate heads."</li>
+      </ul>
+      <div class="highlight-box"><strong>Key Fact:</strong> Accounting is much wider than book-keeping. Book-keeping and accounting do NOT have the same meaning.</div>
+      <table class="compare-table">
+        <thead><tr><th>Points of Difference</th><th>Book-Keeping</th><th>Accounting</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Scope of Work</strong></td><td>First phase in Accounting. Involves recording business transactions in prescribed manner.</td><td>Next step. Includes classification, summarizing data, preparation of statements and ascertaining results.</td></tr>
+          <tr><td><strong>2. Job Description</strong></td><td>Job of Book Keeper is of clerical nature.</td><td>Job of Accountant is of technical nature.</td></tr>
+          <tr><td><strong>3. Knowledge & Skill</strong></td><td>No professional knowledge required. Sufficient that he can write in prescribed columns.</td><td>Professional knowledge and skill is required for Accountants.</td></tr>
+          <tr><td><strong>4. Decisions</strong></td><td>Record maintained by Book Keeper serves as a base for the Accounting process.</td><td>Accounting record is used to make decisions regarding business activities.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. Special Fields -->
+  <div class="topic">
+    <div class="topic-header" onclick="toggleTopic(this)">
+      <span class="topic-title">3. Special Fields / Branches of Accounting</span>
+      <span class="topic-arrow">▾</span>
+    </div>
+    <div class="topic-body">
+      <ul class="bullet-list">
+        <li><strong>Financial Accounting:</strong> Concerns with general accounting system. Records business transactions in books and prepares periodical reports for managers and general public. Prepares journal, ledger, trial balance, income statement and balance sheet.</li>
+        <li><strong>Cost Accounting:</strong> Main objective is to control cost of production and distribution. Checks efficiency of producing, selling and administrative departments by applying actual and pre-determined cost techniques. Also shows effects on cost with changes in volume of production and sales.</li>
+        <li><strong>Managerial Accounting:</strong> Mainly concerns with selection of best among various alternatives. Uses techniques of historical, estimated and actual data as a device toward positive change.</li>
+        <li><strong>Government Accounting:</strong> Method of recording financial transactions of central and provincial governments. Keeps record of expenditure, taxes, revenue and budget of various government departments. Also known as <em>Applied Accounting</em>.</li>
+        <li><strong>Auditing:</strong> Examination of the accounting record. Purpose is to check finances and accuracy of accounting record and its reconciliation with prescribed rules, policies and procedure.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. Functions of Accounting -->
+  <div class="topic">
+    <div class="topic-header" onclick="toggleTopic(this)">
+      <span class="topic-title">4. Functions / Objec
